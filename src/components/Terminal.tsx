@@ -24,7 +24,6 @@ export default function Terminal(props: GridComponentProps) {
 
   useMemo(() => {
     const el = terminalLinesEl.current;
-
     if (el) {
       setTimeout(() => {
         el.scrollTop = el.scrollHeight;

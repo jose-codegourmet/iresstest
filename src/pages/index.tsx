@@ -8,7 +8,10 @@ import Terminal from '@/components/Terminal';
 import '@/styles/main.scss';
 
 import { RobotComponentProps, commandLineType } from '@/types';
-import { placeInterpretter } from '@/utils/commandInterpreter';
+import {
+  placeInterpretter,
+  moveInterpretter,
+} from '@/utils/commandInterpreter';
 import { commandValidator } from '@/utils/commandValidator';
 
 export default function Home() {
@@ -19,7 +22,7 @@ export default function Home() {
     if (cmd === ``) return;
 
     const cmdFunction: string = cmd.split(` `)[0];
-    const errors = commandValidator(cmd);
+    const errors = commandValidator(cmd, robotConfig);
 
     if (errors.length > 0) {
       setCommandLines([
@@ -46,6 +49,33 @@ export default function Home() {
         message,
         position: { posX, posY, posF },
       } = placeInterpretter(position);
+
+      setCommandLines([
+        ...commandLines,
+        {
+          id: `${Date.now()}`,
+          message: cmd,
+          type: `info`,
+        },
+        {
+          id: `${Date.now()}`,
+          message,
+          type: `success`,
+        },
+      ]);
+
+      setRobotConfig({
+        face: posF,
+        positionX: posX,
+        positionY: posY,
+      });
+    }
+
+    if (cmdFunction === `MOVE`) {
+      const {
+        message,
+        position: { posX, posY, posF },
+      } = moveInterpretter({ ...robotConfig });
 
       setCommandLines([
         ...commandLines,

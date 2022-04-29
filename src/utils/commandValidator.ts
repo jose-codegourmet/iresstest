@@ -5,9 +5,12 @@ import {
   COMMANDS_WITH_PARAMS,
 } from '@/contstants';
 
-import { commandLineType } from '@/types';
+import { commandLineType, RobotComponentProps } from '@/types';
 
-export function commandValidator(cmdArg: string) {
+export function commandValidator(
+  cmdArg: string,
+  robotConfig: RobotComponentProps,
+) {
   const errorsList: Array<commandLineType> = [];
   const [command, params] = cmdArg.split(` `);
 
@@ -74,13 +77,58 @@ export function commandValidator(cmdArg: string) {
       intPosX = Number(posX);
       intPosY = Number(posY);
 
-      if (intPosX > 5) {
+      if (intPosX > 4) {
         pushErrors(`Position X ${intPosX} should be less than 4 `);
       }
 
-      if (intPosY > 5) {
+      if (intPosY > 4) {
         pushErrors(`Position Y ${intPosY} should be less than 4 `);
       }
+    }
+  }
+
+  if (command === `MOVE`) {
+    if (!robotConfig) {
+      errorsList.push({
+        id: `${Date.now()}`,
+        message: `Robot should be placed!`,
+        type: `error`,
+      });
+      return errorsList;
+    }
+
+    const { face, positionX, positionY } = robotConfig;
+
+    if (face === `NORTH` && positionY - 1 < 0) {
+      errorsList.push({
+        id: `${Date.now()}`,
+        message: `Position Y = ${positionY - 1} is out of bounds!`,
+        type: `error`,
+      });
+    }
+
+    if (face === `SOUTH` && positionY + 1 > 4) {
+      errorsList.push({
+        id: `${Date.now()}`,
+        message: `Position Y = ${positionY + 1} is out of bounds!`,
+        type: `error`,
+      });
+    }
+
+    if (face === `EAST` && positionX + 1 > 4) {
+      errorsList.push({
+        id: `${Date.now()}`,
+        message: `Position X = ${positionX + 1} is out of bounds!`,
+        type: `error`,
+      });
+    }
+
+    if (face === `WEST` && positionX - 1 < 0) {
+      errorsList.push({
+        id: `${Date.now()}`,
+        message: `Position X = ${positionX - 1} is out of bounds!`,
+        type: `error`,
+      });
     }
   }
 
