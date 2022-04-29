@@ -1,0 +1,29 @@
+.robot {
+    position: absolute;
+    top: var(--positionY);
+    left: var(--positionX);
+    font-size: 1em;
+    width: 1em;
+    height: 1em;
+    display: block;
+    transform-origin: center;
+    background-color: pink;
+    line-height: 1;
+
+
+    &--NORTH {
+        transform: rotate(0deg);
+    }
+
+    &--SOUTH {
+        transform: rotate(180deg);
+    }
+
+    &--EAST {
+        transform: rotate(90deg);
+    }
+
+    &--WEST {
+        transform: rotate(270deg);
+    }
+}

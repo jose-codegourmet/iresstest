@@ -1,0 +1,67 @@
+$terminal_field_height: 50px;
+$terminal_bg: $terminal-color;
+
+.terminal {
+    width: 100%;
+    height: 30vh;
+    min-height: 300px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    flex-direction: column;
+    background-color: $terminal_bg;
+    color: $info-color;
+    padding: 1rem 1rem 0;
+
+
+    // .terminal__commands
+    &__commands {
+        max-height: calc(100% - #{$terminal_field_height});
+        height: auto;
+        overflow-y: auto;
+        width: 100%;
+    }
+
+    // .terminal__field
+    &__field {
+        flex-shrink: 0;
+        height: $terminal_field_height;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+
+        input {
+            color: $info-color;
+            width: 100%;
+            height: 100%;
+            font-size: 1rem;
+            border: none;
+            background-color: transparent;
+            outline: none !important;
+        }
+    }
+
+    // .terminal__line
+    &__line {
+        width: 100%;
+        line-height: 1;
+        z-index: 1rem;
+
+        // .terminal__line--error
+        &--error {
+            color: $error-color;
+        }
+
+        // .terminal__line--success
+        &--success {
+            color: $success-color;
+        }
+    }
+
+    .terminal__line-prefix {
+        white-space: nowrap;
+        margin-right: 1ch;
+    }
+}

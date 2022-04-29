@@ -1,0 +1,15 @@
+$grid-size: 5;
+
+.grid {
+    position: relative;
+    margin: 2rem auto;
+    font-size: 5rem;
+    width: calc(1em * #{$grid-size});
+    height: calc(1em * #{$grid-size});
+    background-image:
+        linear-gradient(90deg, #808080 1px, transparent 1px),
+        linear-gradient(0deg, #808080 1px, transparent 1px),
+        linear-gradient(180deg, #808080 1px, transparent 1px),
+        linear-gradient(270deg, #808080 1px, transparent 1px);
+    background-size: 1em 1em;
+}

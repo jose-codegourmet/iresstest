@@ -1,0 +1,15 @@
+body {
+    margin: 0;
+    width: 100%;
+    overflow-x: hidden;
+    background-color: $bg-color;
+    font-family: $font-family;
+}
+
+h1,h2,h3,h4,h5,h6,p,textarea,input {
+    font-family: $font-family;
+}
+
+* {
+    box-sizing: border-box;
+}

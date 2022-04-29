@@ -78,6 +78,7 @@
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-var-requires": "off",
         "no-use-before-define": [0],
+        "react/no-array-index-key": "off",
         "@typescript-eslint/no-use-before-define": [1],
         "import/no-unresolved": 0,
         "import/no-extraneous-dependencies": [
@@ -104,6 +105,9 @@
     }
   ],
   "settings": {
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
     "import/resolver": {
       "typescript": {
         "project": "."
