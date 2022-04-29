@@ -36,7 +36,7 @@ export default function Terminal(props: GridComponentProps) {
       <div className="terminal__commands" ref={terminalLinesEl}>
         {commandLines.map(({ id, message, type }) => (
           <p
-            key={`cmd_${id}`}
+            key={`cmd_${id}-${type}`}
             className={`terminal__line terminal__line--${type}`}
           >
             <span className="terminal__line-prefix"> Iress Exam {`>>`} </span>

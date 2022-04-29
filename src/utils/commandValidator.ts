@@ -1,5 +1,6 @@
 import {
   ALLOWED_FACE_DIRECTIONS,
+  ALLOWED_COMMANDS_WITH_ROBOT,
   ALLOWED_COMMANDS,
   COMMAND_FORMATS,
   COMMANDS_WITH_PARAMS,
@@ -16,7 +17,7 @@ export function commandValidator(
 
   const pushErrors = (errMsg) => {
     errorsList.push({
-      id: `${Date.now()}`,
+      id: `${Date.now().valueOf()}`,
       message: errMsg,
       type: `error`,
     });
@@ -38,6 +39,17 @@ export function commandValidator(
       ${COMMAND_FORMATS[command]}
     `);
 
+    return errorsList;
+  }
+
+  // validate if commands fired requires a robot on
+  // the grid
+  if (ALLOWED_COMMANDS_WITH_ROBOT.includes(command) && !robotConfig) {
+    errorsList.push({
+      id: `${Date.now().valueOf()}`,
+      message: `Robot should be placed!`,
+      type: `error`,
+    });
     return errorsList;
   }
 
@@ -87,47 +99,51 @@ export function commandValidator(
     }
   }
 
+  /**
+   * ====================================
+   * "MOVE" COMMAND VALIDATION
+   * ====================================
+   */
   if (command === `MOVE`) {
-    if (!robotConfig) {
-      errorsList.push({
-        id: `${Date.now()}`,
-        message: `Robot should be placed!`,
-        type: `error`,
-      });
-      return errorsList;
-    }
-
     const { face, positionX, positionY } = robotConfig;
 
     if (face === `NORTH` && positionY - 1 < 0) {
       errorsList.push({
-        id: `${Date.now()}`,
-        message: `Position Y = ${positionY - 1} is out of bounds!`,
-        type: `error`,
+        id: `${Date.now().valueOf()}`,
+        message: `Ignoring Command of Position Y = ${
+          positionY - 1
+        } is out of bounds!`,
+        type: `warning`,
       });
     }
 
     if (face === `SOUTH` && positionY + 1 > 4) {
       errorsList.push({
-        id: `${Date.now()}`,
-        message: `Position Y = ${positionY + 1} is out of bounds!`,
-        type: `error`,
+        id: `${Date.now().valueOf()}`,
+        message: `Ignoring Command of Position Y = ${
+          positionY + 1
+        } is out of bounds!`,
+        type: `warning`,
       });
     }
 
     if (face === `EAST` && positionX + 1 > 4) {
       errorsList.push({
-        id: `${Date.now()}`,
-        message: `Position X = ${positionX + 1} is out of bounds!`,
-        type: `error`,
+        id: `${Date.now().valueOf()}`,
+        message: `Ignoring Command of Position X = ${
+          positionX + 1
+        } is out of bounds!`,
+        type: `warning`,
       });
     }
 
     if (face === `WEST` && positionX - 1 < 0) {
       errorsList.push({
-        id: `${Date.now()}`,
-        message: `Position X = ${positionX - 1} is out of bounds!`,
-        type: `error`,
+        id: `${Date.now().valueOf()}`,
+        message: `Ignoring Command of Position X = ${
+          positionX - 1
+        } is out of bounds!`,
+        type: `warning`,
       });
     }
   }

@@ -6,7 +6,11 @@ interface GridComponentProps {
 
 export default function Grid(props: GridComponentProps) {
   const { robotEl } = props;
-  return <div className="grid">{robotEl}</div>;
+  return (
+    <div className="grid-container">
+      <div className="grid">{robotEl}</div>
+    </div>
+  );
 }
 
 Grid.defaultProps = {

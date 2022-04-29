@@ -1,9 +1,14 @@
-$primary-color: #b2f7db;
+$primary-color: #1bf59e;
 $info-color: #c7d1ef;
 $error-color: #f05e94;
+$warning-color: #f39213;
 $success-color: $primary-color;
 
 
-$bg-color: #1a1d26;
+$simulator-bg: #bbc6d8;
+$simulator-border: #64748f;
+$grid-bg: #1c1b4a;
+$grid-line-color: lighten($grid-bg, 15%);
+$bg-color: #121212;
 $terminal-color: #0b0f1b;
 $font-family: 'Source Code Pro', monospace;

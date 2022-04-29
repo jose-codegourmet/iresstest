@@ -3,8 +3,7 @@ $terminal_bg: $terminal-color;
 
 .terminal {
     width: 100%;
-    height: 30vh;
-    min-height: 300px;
+    height: auto;
     display: flex;
     align-items: flex-start;
     justify-content: flex-end;
@@ -12,7 +11,7 @@ $terminal_bg: $terminal-color;
     background-color: $terminal_bg;
     color: $info-color;
     padding: 1rem 1rem 0;
-
+    font-size: 0.8rem;
 
     // .terminal__commands
     &__commands {
@@ -36,7 +35,7 @@ $terminal_bg: $terminal-color;
             color: $info-color;
             width: 100%;
             height: 100%;
-            font-size: 1rem;
+            font-size: 1em;
             border: none;
             background-color: transparent;
             outline: none !important;
@@ -49,6 +48,8 @@ $terminal_bg: $terminal-color;
         line-height: 1;
         z-index: 1rem;
 
+
+
         // .terminal__line--error
         &--error {
             color: $error-color;
@@ -58,6 +59,15 @@ $terminal_bg: $terminal-color;
         &--success {
             color: $success-color;
         }
+
+        // .terminal__line--success
+        &--warning {
+            color: $warning-color;
+        }
+    }
+
+    .terminal__line-cmd {
+        white-space: pre-line;
     }
 
     .terminal__line-prefix {

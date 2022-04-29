@@ -4,5 +4,5 @@ import { BaseComponentProps } from '@/types';
 export default function Title(props: BaseComponentProps) {
   const { children } = props;
 
-  return <h1>{children}</h1>;
+  return <h1 className="page-title">{children}</h1>;
 }
