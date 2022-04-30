@@ -14,6 +14,7 @@ export const ALLOWED_COMMANDS: Array<string> = [
   `REPORT`,
   `CLEAR`,
   `HELP`,
+  `SET_ORIGIN`,
 ];
 
 export const ALLOWED_COMMANDS_WITH_ROBOT: Array<string> = [
@@ -23,8 +24,11 @@ export const ALLOWED_COMMANDS_WITH_ROBOT: Array<string> = [
   `REPORT`,
 ];
 
-export const COMMANDS_WITH_PARAMS: Array<string> = [`PLACE`];
+export const GRID_SIZE = 5;
+
+export const COMMANDS_WITH_PARAMS: Array<string> = [`PLACE`, `SET_ORIGIN`];
 
 export const COMMAND_FORMATS: { [key: string]: string } = {
   PLACE: `PLACE positionX <number>, position Y <number>, position F < NORTH ,SOUTH , EAST or WEST > `,
+  SET_ORIGIN: `SET_ORIGIN positionX <number>, position Y <number>`,
 };

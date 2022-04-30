@@ -1,6 +1,7 @@
 .simulator {
     width: 100%;
-    height: 500px;
+    height: auto;
+    max-height: 800px;
     margin: 0 auto;
     max-width: 1200px;
     background-color: $simulator-bg;

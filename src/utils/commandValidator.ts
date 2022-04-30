@@ -6,12 +6,15 @@ import {
   COMMANDS_WITH_PARAMS,
 } from '@/contstants';
 
-import { commandLineType, RobotComponentProps } from '@/types';
+import { CommandValidatorType, commandLineType } from '@/types';
 
-export function commandValidator(
-  cmdArg: string,
-  robotConfig: RobotComponentProps,
-) {
+export function commandValidator({
+  cmdArg,
+  gridSize,
+  robotConfig,
+  movableTilesYArray,
+  movableTilesXArray,
+}: CommandValidatorType) {
   const errorsList: Array<commandLineType> = [];
   const [command, params] = cmdArg.split(` `);
 
@@ -57,14 +60,59 @@ export function commandValidator(
 
   /**
    * ====================================
+   * "SET_ORIGIN" COMMAND VALIDATION
+   * ====================================
+   */
+  if (command === `SET_ORIGIN`) {
+    let intPosX = 0;
+    let intPosY = 0;
+
+    const [posX, posY] = params.split(`,`);
+
+    if (!posX) {
+      pushErrors(`Position X should be defined!`);
+    }
+
+    if (!posY) {
+      pushErrors(`Position Y should be defined!`);
+    }
+
+    if (posX && posY) {
+      intPosX = Number(posX);
+      intPosY = Number(posY);
+
+      if (posX.includes(`.`)) {
+        pushErrors(`Position X should be whole number `);
+      }
+
+      if (posY.includes(`.`)) {
+        pushErrors(`Position Y should be whole number `);
+      }
+
+      if (!intPosX) {
+        pushErrors(`Position X ${intPosX} is not a valid number `);
+      }
+
+      if (!intPosY) {
+        pushErrors(`Position Y ${intPosY} is not a valid number `);
+      }
+
+      if (intPosX > gridSize) {
+        pushErrors(`Position X ${intPosX} should be less than ${gridSize} `);
+      }
+
+      if (intPosY > gridSize) {
+        pushErrors(`Position Y ${intPosY} should be less than ${gridSize} `);
+      }
+    }
+  }
+  /**
+   * ====================================
    * "PLACE" COMMAND VALIDATION
    * ====================================
    */
 
   if (command === `PLACE`) {
-    let intPosX = 0;
-    let intPosY = 0;
-
     const [posX, posY, posF] = params.split(`,`);
 
     if (!posX) {
@@ -86,15 +134,47 @@ export function commandValidator(
     }
 
     if (posX && posY) {
-      intPosX = Number(posX);
-      intPosY = Number(posY);
+      const intPosX = Number(posX);
+      const intPosY = Number(posY);
 
-      if (intPosX > 4) {
-        pushErrors(`Position X ${intPosX} should be less than 4 `);
+      if (posX.includes(`.`)) {
+        pushErrors(`Position X should be whole number `);
       }
 
-      if (intPosY > 4) {
-        pushErrors(`Position Y ${intPosY} should be less than 4 `);
+      if (posY.includes(`.`)) {
+        pushErrors(`Position Y should be whole number `);
+      }
+
+      if (!intPosX) {
+        pushErrors(`Position X ${posX} is not a valid number `);
+      }
+
+      if (!intPosY) {
+        pushErrors(`Position Y ${posY} is not a valid number `);
+      }
+
+      // do not push through as next steps will be needing it for findIndex
+      if (errorsList.length > 0) return errorsList;
+
+      const indexOfPlaceX = movableTilesXArray.findIndex((i) => i === intPosX);
+      const indexOfPlaceY = movableTilesYArray.findIndex((i) => i === intPosY);
+
+      // indexOfPlaceX and indexOfPlaceY
+      // is the actual grid position
+      // while posY and posX
+      // is the readable position based
+      // on the grid origin
+
+      if (indexOfPlaceX < 0 || indexOfPlaceX > gridSize) {
+        pushErrors(
+          `Position X ${intPosX} should be between ${movableTilesXArray[0]} and ${movableTilesXArray[gridSize]} `,
+        );
+      }
+
+      if (indexOfPlaceY < 0 || indexOfPlaceY > gridSize) {
+        pushErrors(
+          `Position Y ${intPosY} should be between ${movableTilesYArray[0]} and ${movableTilesYArray[gridSize]} `,
+        );
       }
     }
   }
@@ -110,24 +190,20 @@ export function commandValidator(
     if (face === `NORTH` && positionY - 1 < 0) {
       errorsList.push({
         id: `${Date.now().valueOf()}`,
-        message: `Ignoring Command of Position Y = ${
-          positionY - 1
-        } is out of bounds!`,
+        message: `Ignoring Command of Position Y = 5 is out of bounds!`,
         type: `warning`,
       });
     }
 
-    if (face === `SOUTH` && positionY + 1 > 4) {
+    if (face === `SOUTH` && positionY + 1 > gridSize) {
       errorsList.push({
         id: `${Date.now().valueOf()}`,
-        message: `Ignoring Command of Position Y = ${
-          positionY + 1
-        } is out of bounds!`,
+        message: `Ignoring Command of Position Y = -1 is out of bounds!`,
         type: `warning`,
       });
     }
 
-    if (face === `EAST` && positionX + 1 > 4) {
+    if (face === `EAST` && positionX + 1 > gridSize) {
       errorsList.push({
         id: `${Date.now().valueOf()}`,
         message: `Ignoring Command of Position X = ${

@@ -1,4 +1,4 @@
-$grid-size: 5;
+$grid-size: var(--grid-size);
 
 
 .grid-container {
@@ -7,12 +7,14 @@ $grid-size: 5;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
 }
 
 .grid {
     position: relative;
     margin: 2rem auto;
     font-size: clamp(40px, 6vw, 80px);
+    flex-shrink: 0;
 
     width: calc(1em * #{$grid-size});
     height: calc(1em * #{$grid-size});
@@ -22,4 +24,91 @@ $grid-size: 5;
         linear-gradient(180deg, rgba(#FFF, .2) 1px, transparent 1px),
         linear-gradient(270deg, rgba(#FFF, .2) 1px, transparent 1px);
     background-size: 1em 1em;
+
+    .grid-labels {
+        z-index: 10;
+    }
+
+    .robot {
+        z-index: 5;
+    }
+}
+
+.grid-guide {
+    font-size: 1rem;
+    color: #fff;
+    background-color: rgba(#fff, .2);
+    border-radius: 1rem;
+    width: 80%;
+    margin: 0 auto;
+    padding: 1rem;
+    p {
+        margin: 0;
+    }
+}
+
+
+.grid-labels {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 1em;
+
+    // .grid-labels__row
+    &__row {
+        display: flex;
+        align-items: start;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        font-size: 1em;
+    }
+
+    // .grid-labels__cell
+    &__cell {
+        font-size: 1em;
+        width: 1em;
+        height: 1em;
+        flex-shrink: 0;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        padding: 0.1em;
+        position: relative;
+
+        .label {
+            padding: .15em .5em;
+            border-radius: .5em;
+            color: $grid-label-text;
+            line-height: 1;
+            font-size: 0.15em;
+            background-color: $grid-label-bg;
+            pointer-events: none;
+        }
+
+        .real-origin {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 300ms ease-out;
+            font-size: 0.15em;
+            color: $grid-label-text;
+            background-color: $error-color;
+            &:hover {
+                opacity: 1;
+            }
+        }
+
+        // .grid-labels__cell--active
+        &--active {
+            .label {
+                background-color: $warning-color;
+            }
+        }
+    }
 }

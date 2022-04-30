@@ -7,23 +7,46 @@ import Terminal from '@/components/Terminal';
 
 import '@/styles/main.scss';
 
-import { RobotComponentProps, commandLineType } from '@/types';
+import { RobotComponentProps, commandLineType, OriginType } from '@/types';
 import {
   placeInterpretter,
   moveInterpretter,
   rotateInterpretter,
 } from '@/utils/commandInterpreter';
 import { commandValidator } from '@/utils/commandValidator';
+import { GRID_SIZE } from '@/contstants';
 
 export default function Home() {
+  const [originConfig, setOriginConfig] = useState<OriginType>({
+    originX: 0,
+    originY: GRID_SIZE - 1,
+  });
+
   const [robotConfig, setRobotConfig] = useState<RobotComponentProps>();
   const [commandLines, setCommandLines] = useState<Array<commandLineType>>([]);
+
+  const movableTilesXArray = [];
+  const movableTilesYArray = [];
+
+  for (let index = 0; index < GRID_SIZE; index++) {
+    const yStartAt = originConfig.originY;
+    const xStartAt = 0 - originConfig.originX;
+    movableTilesYArray.push(yStartAt - index);
+    movableTilesXArray.push(xStartAt + index);
+  }
 
   const handleFireCommand = (cmd) => {
     if (cmd === ``) return;
 
     const cmdFunction: string = cmd.split(` `)[0];
-    const errors = commandValidator(cmd, robotConfig);
+    const validatorGridSize: number = GRID_SIZE - 1; // since grid starts with 0 tile
+    const errors = commandValidator({
+      cmdArg: cmd,
+      gridSize: validatorGridSize,
+      robotConfig,
+      movableTilesYArray,
+      movableTilesXArray,
+    });
 
     if (errors.length > 0) {
       setCommandLines([
@@ -49,7 +72,11 @@ export default function Home() {
       const {
         message,
         position: { posX, posY, posF },
-      } = placeInterpretter(position);
+      } = placeInterpretter({
+        position,
+        movableTilesYArray,
+        movableTilesXArray,
+      });
 
       setCommandLines([
         ...commandLines,
@@ -72,11 +99,24 @@ export default function Home() {
       });
     }
 
+    if (cmdFunction === `SET_ORIGIN`) {
+      const position: string = cmd.split(` `)[1];
+      const [argOriginX, argOriginY]: Array<string> = position.split(`,`);
+      setOriginConfig({
+        originX: Number(argOriginX),
+        originY: Number(argOriginY),
+      });
+    }
+
     if (cmdFunction === `MOVE`) {
       const {
         message,
         position: { posX, posY, posF },
-      } = moveInterpretter({ ...robotConfig });
+      } = moveInterpretter({
+        robotConfig,
+        movableTilesYArray,
+        movableTilesXArray,
+      });
 
       setCommandLines([
         ...commandLines,
@@ -140,8 +180,8 @@ export default function Home() {
             ============================================= \n
                   Robot Report: \n
             ============================================= \n
-            Position X  = ${robotConfig.positionX} \n
-            Position Y = ${robotConfig.positionY} \n
+            Position X  = ${movableTilesXArray[robotConfig.positionX]} \n
+            Position Y = ${movableTilesYArray[robotConfig.positionY]} \n
             Facing = ${robotConfig.face}
             \n\n\n
           `,
@@ -166,8 +206,8 @@ export default function Home() {
                   Robot Manual: \n
             ============================================= \n
             PLACE  = place the robot to coordinates ( x , y , f ) \n
-            > x is the x axis up to 4th tile \n
-            > y is the y axis up to 4th tile \n
+            > x is the x axis up to number ${GRID_SIZE} tile \n
+            > y is the y axis up to number ${GRID_SIZE} tile \n
             > f is the Robot's direction with allowed parameters: "NORTH","EAST","SOUTH" and "WEST" \n
             \n
             MOVE = The robot will move 1 tile depending on the direction it is facing \n
@@ -175,6 +215,12 @@ export default function Home() {
             RIGHT = will rotate the robot clockwise \n
             REPORT = show robot's current coordinates \n
             CLEAR = Reset's the grid and terminal \n
+
+            \n
+            \n
+            BONUS: \n
+            SET_ORIGIN = CHANGE THE ORIGIN OF THE PLACE COORDINATE ( x , y) \n
+
             \n\n\n
           `,
           type: `info`,
@@ -189,6 +235,11 @@ export default function Home() {
       <div className="simulator">
         {robotConfig ? (
           <Grid
+            gridSize={GRID_SIZE}
+            robotX={robotConfig.positionX}
+            robotY={robotConfig.positionY}
+            movableTilesYArray={movableTilesYArray}
+            movableTilesXArray={movableTilesXArray}
             robotEl={
               <Robot
                 face={robotConfig.face}
@@ -198,7 +249,11 @@ export default function Home() {
             }
           />
         ) : (
-          <Grid />
+          <Grid
+            gridSize={GRID_SIZE}
+            movableTilesYArray={movableTilesYArray}
+            movableTilesXArray={movableTilesXArray}
+          />
         )}
 
         <Terminal commandLines={commandLines} fireCommand={handleFireCommand} />
