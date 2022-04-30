@@ -89,12 +89,12 @@ export function commandValidator({
         pushErrors(`Position Y should be whole number `);
       }
 
-      if (!intPosX) {
-        pushErrors(`Position X ${intPosX} is not a valid number `);
+      if (!intPosX && intPosX !== 0) {
+        pushErrors(`Position X ${posX} is not a valid number `);
       }
 
-      if (!intPosY) {
-        pushErrors(`Position Y ${intPosY} is not a valid number `);
+      if (!intPosY && intPosY !== 0) {
+        pushErrors(`Position Y ${posY} is not a valid number `);
       }
 
       if (intPosX > gridSize) {
@@ -145,11 +145,11 @@ export function commandValidator({
         pushErrors(`Position Y should be whole number `);
       }
 
-      if (!intPosX) {
+      if (!intPosX && intPosX !== 0) {
         pushErrors(`Position X ${posX} is not a valid number `);
       }
 
-      if (!intPosY) {
+      if (!intPosY && intPosY !== 0) {
         pushErrors(`Position Y ${posY} is not a valid number `);
       }
 
