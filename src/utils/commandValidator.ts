@@ -2,11 +2,10 @@ import {
   ALLOWED_FACE_DIRECTIONS,
   ALLOWED_COMMANDS_WITH_ROBOT,
   ALLOWED_COMMANDS,
-  COMMAND_FORMATS,
-  COMMANDS_WITH_PARAMS,
 } from '@/contstants';
 
 import { CommandValidatorType, commandLineType } from '@/types';
+import { commandEntityValidator } from './commandEntityValidator';
 
 export function commandValidator({
   cmdArg,
@@ -18,30 +17,17 @@ export function commandValidator({
   const errorsList: Array<commandLineType> = [];
   const [command, params] = cmdArg.split(` `);
 
-  const pushErrors = (errMsg) => {
+  const pushErrors = (errorMsg: string, type = `error`) => {
     errorsList.push({
       id: `${Date.now().valueOf()}`,
-      message: errMsg,
-      type: `error`,
+      message: errorMsg,
+      type,
     });
   };
 
   // validate if command is allowed
   if (!ALLOWED_COMMANDS.includes(command)) {
     pushErrors(`${command} is not a valid command`);
-    return errorsList;
-  }
-
-  // validate if command is missing a parameter
-  // then show the format of the command
-  if (COMMANDS_WITH_PARAMS.includes(command) && !params) {
-    pushErrors(`
-      ${command} is missing a parameter \n
-      please follow the format: \n
-      \n
-      ${COMMAND_FORMATS[command]}
-    `);
-
     return errorsList;
   }
 
@@ -64,47 +50,32 @@ export function commandValidator({
    * ====================================
    */
   if (command === `SET_ORIGIN`) {
-    let intPosX = 0;
-    let intPosY = 0;
-
-    const [posX, posY] = params.split(`,`);
-
-    if (!posX) {
-      pushErrors(`Position X should be defined!`);
-    }
-
-    if (!posY) {
-      pushErrors(`Position Y should be defined!`);
-    }
-
-    if (posX && posY) {
-      intPosX = Number(posX);
-      intPosY = Number(posY);
-
-      if (posX.includes(`.`)) {
-        pushErrors(`Position X should be whole number `);
+    const isOutOfBounds = (paramName, value) => {
+      if (value < 0 || value > gridSize) {
+        return `${paramName} ${value} should be greater than 0 and less than ${gridSize} `;
       }
+      return false;
+    };
 
-      if (posY.includes(`.`)) {
-        pushErrors(`Position Y should be whole number `);
-      }
-
-      if (!intPosX && intPosX !== 0) {
-        pushErrors(`Position X ${posX} is not a valid number `);
-      }
-
-      if (!intPosY && intPosY !== 0) {
-        pushErrors(`Position Y ${posY} is not a valid number `);
-      }
-
-      if (intPosX > gridSize) {
-        pushErrors(`Position X ${intPosX} should be less than ${gridSize} `);
-      }
-
-      if (intPosY > gridSize) {
-        pushErrors(`Position Y ${intPosY} should be less than ${gridSize} `);
-      }
-    }
+    commandEntityValidator({
+      command,
+      params,
+      paramsConfig: [
+        {
+          name: `positionX`,
+          isRequired: true,
+          type: `whole number`,
+          validator: isOutOfBounds,
+        },
+        {
+          name: `positionY`,
+          isRequired: true,
+          type: `whole number`,
+          validator: isOutOfBounds,
+        },
+      ],
+      pushErrors,
+    });
   }
   /**
    * ====================================

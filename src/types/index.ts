@@ -44,5 +44,17 @@ export interface MoveInterpretterType extends MovableTypes {
 export interface commandLineType {
   id?: string;
   message?: string;
-  type?: 'info' | 'success' | 'error' | 'warning';
+  type?: string;
+}
+
+type ParamsConfigType = {
+  name: string;
+  isRequire: boolean;
+  type: 'whole  number' | 'string';
+  validator: () => string;
+};
+export interface commandEntityValidatorType {
+  command: string;
+  params: string;
+  paramsConfig: Array<ParamsConfigType>;
 }
