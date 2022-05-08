@@ -67,14 +67,7 @@ export default function Terminal(props) {
     setCurrCommand(``);
 
     if (errors.length > 0) {
-      updateCommandLines([
-        {
-          id: `${Date.now().valueOf()}`,
-          message: cmd,
-          type: `info`,
-        },
-        ...errors,
-      ]);
+      updateCommandLines([...errors]);
 
       return;
     }
