@@ -1,4 +1,4 @@
-import { COMMAND_FORMATS } from '@/contstants';
+import { COMMAND_FORMATS, ALLOWED_FACE_DIRECTIONS } from '@/contstants';
 import isPlural from './others';
 
 export function commandEntityValidator({
@@ -31,26 +31,34 @@ export function commandEntityValidator({
     }
 
     paramsConfig.forEach((pc, indx) => {
-      const paramVal = paramsArr[indx];
+      const paramValue = paramsArr[indx];
       const { name, isRequired, type, validator } = pc;
 
-      if ((isRequired && !paramVal) || paramVal === ``) {
+      if ((isRequired && !paramValue) || paramValue === ``) {
         pushErrors(`${name} should be defined!`);
         return;
       }
 
       if (type === `whole number`) {
-        const pValueTemp = Number(paramVal);
+        const pValueTemp = Number(paramValue);
         const isNotValidNumber =
-          Number.isNaN(pValueTemp) || paramVal.includes(`.`);
+          Number.isNaN(pValueTemp) || paramValue.includes(`.`);
 
         if (isNotValidNumber) {
           pushErrors(`${name} is not a valid ${type}`);
         }
       }
 
-      const validatorErrMssg = validator(name, paramVal);
-      if (validatorErrMssg) pushErrors(validatorErrMssg);
+      if (type === `faces` && !ALLOWED_FACE_DIRECTIONS.includes(paramValue)) {
+        pushErrors(
+          `Position F ${name} is not allowed. Please use 'NORTH','SOUTH','EAST' or 'WEST' `,
+        );
+      }
+
+      if (validator) {
+        const validatorErrMssg = validator(name, paramValue);
+        if (validatorErrMssg) pushErrors(validatorErrMssg);
+      }
     });
   }
 }

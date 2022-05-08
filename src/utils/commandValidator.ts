@@ -1,8 +1,4 @@
-import {
-  ALLOWED_FACE_DIRECTIONS,
-  ALLOWED_COMMANDS_WITH_ROBOT,
-  ALLOWED_COMMANDS,
-} from '@/contstants';
+import { ALLOWED_COMMANDS_WITH_ROBOT, ALLOWED_COMMANDS } from '@/contstants';
 
 import { CommandValidatorType, commandLineType } from '@/types';
 import { commandEntityValidator } from './commandEntityValidator';
@@ -62,13 +58,13 @@ export function commandValidator({
       params,
       paramsConfig: [
         {
-          name: `positionX`,
+          name: `position X`,
           isRequired: true,
           type: `whole number`,
           validator: isOutOfBounds,
         },
         {
-          name: `positionY`,
+          name: `position Y`,
           isRequired: true,
           type: `whole number`,
           validator: isOutOfBounds,
@@ -84,70 +80,59 @@ export function commandValidator({
    */
 
   if (command === `PLACE`) {
-    const [posX, posY, posF] = params.split(`,`);
+    // indexOfPlaceX and indexOfPlaceY
+    // is the actual grid position
+    // while value Position X and Y
+    // is the readable position based
+    // on the grid origin
+    const isOutOfMovableBounds = (paramName, paramValue) => {
+      const intParamValue = Number(paramValue);
 
-    if (!posX) {
-      pushErrors(`Position X should be defined!`);
-    }
-
-    if (!posY) {
-      pushErrors(`Position Y should be defined!`);
-    }
-
-    if (!posF) {
-      pushErrors(`Position F should be defined!`);
-    }
-
-    if (!ALLOWED_FACE_DIRECTIONS.includes(posF)) {
-      pushErrors(
-        `Position F ${posF} is not allowed. Please use 'NORTH','SOUTH','EAST' or 'WEST' `,
-      );
-    }
-
-    if (posX && posY) {
-      const intPosX = Number(posX);
-      const intPosY = Number(posY);
-
-      if (posX.includes(`.`)) {
-        pushErrors(`Position X should be whole number `);
-      }
-
-      if (posY.includes(`.`)) {
-        pushErrors(`Position Y should be whole number `);
-      }
-
-      if (!intPosX && intPosX !== 0) {
-        pushErrors(`Position X ${posX} is not a valid number `);
-      }
-
-      if (!intPosY && intPosY !== 0) {
-        pushErrors(`Position Y ${posY} is not a valid number `);
-      }
-
-      // do not push through as next steps will be needing it for findIndex
-      if (errorsList.length > 0) return errorsList;
-
-      const indexOfPlaceX = movableTilesXArray.findIndex((i) => i === intPosX);
-      const indexOfPlaceY = movableTilesYArray.findIndex((i) => i === intPosY);
-
-      // indexOfPlaceX and indexOfPlaceY
-      // is the actual grid position
-      // while posY and posX
-      // is the readable position based
-      // on the grid origin
-
-      if (indexOfPlaceX < 0 || indexOfPlaceX > gridSize) {
-        pushErrors(
-          `Position X ${intPosX} should be between ${movableTilesXArray[0]} and ${movableTilesXArray[gridSize]} `,
+      if (paramName === `Position X`) {
+        const indexOfPlaceX = movableTilesXArray.findIndex(
+          (i) => i === intParamValue,
         );
+        if (indexOfPlaceX < 0 || indexOfPlaceX > gridSize) {
+          return `${paramName} ${paramValue} should be between ${movableTilesXArray[0]} and ${movableTilesXArray[gridSize]} `;
+        }
       }
 
-      if (indexOfPlaceY < 0 || indexOfPlaceY > gridSize) {
-        pushErrors(
-          `Position Y ${intPosY} should be between ${movableTilesYArray[0]} and ${movableTilesYArray[gridSize]} `,
+      if (paramName === `Position Y`) {
+        const indexOfPlaceY = movableTilesYArray.findIndex(
+          (i) => i === intParamValue,
         );
+        if (indexOfPlaceY < 0 || indexOfPlaceY > gridSize) {
+          return `${paramName} ${paramValue} should be between ${movableTilesYArray[0]} and ${movableTilesYArray[gridSize]} `;
+        }
       }
-    }
+
+      return false;
+    };
+
+    commandEntityValidator({
+      command,
+      params,
+      paramsConfig: [
+        {
+          name: `position X`,
+          isRequired: true,
+          type: `whole number`,
+          validator: isOutOfMovableBounds,
+        },
+        {
+          name: `position Y`,
+          isRequired: true,
+          type: `whole number`,
+          validator: isOutOfMovableBounds,
+        },
+        {
+          name: `position F`,
+          isRequired: true,
+          type: `faces`,
+        },
+      ],
+      pushErrors,
+    });
   }
 
   /**

@@ -50,8 +50,8 @@ export interface commandLineType {
 type ParamsConfigType = {
   name: string;
   isRequire: boolean;
-  type: 'whole  number' | 'string';
-  validator: () => string;
+  type: 'whole  number' | 'string' | 'faces';
+  validator?: () => string;
 };
 export interface commandEntityValidatorType {
   command: string;
