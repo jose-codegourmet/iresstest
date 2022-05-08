@@ -1,6 +1,6 @@
 import { ALLOWED_COMMANDS_WITH_ROBOT, ALLOWED_COMMANDS } from '@/contstants';
 
-import { CommandValidatorType, commandLineType } from '@/types';
+import { CommandValidatorType, CommandLineTypes } from '@/types';
 import { commandEntityValidator } from './commandEntityValidator';
 
 export function commandValidator({
@@ -10,7 +10,7 @@ export function commandValidator({
   movableTilesYArray,
   movableTilesXArray,
 }: CommandValidatorType) {
-  const errorsList: Array<commandLineType> = [];
+  const errorsList: Array<CommandLineTypes> = [];
   const [command, params] = cmdArg.split(` `);
 
   const pushErrors = (errorMsg: string, type = `error`) => {
@@ -88,7 +88,7 @@ export function commandValidator({
     const isOutOfMovableBounds = (paramName, paramValue) => {
       const intParamValue = Number(paramValue);
 
-      if (paramName === `Position X`) {
+      if (paramName === `position X`) {
         const indexOfPlaceX = movableTilesXArray.findIndex(
           (i) => i === intParamValue,
         );
@@ -97,7 +97,7 @@ export function commandValidator({
         }
       }
 
-      if (paramName === `Position Y`) {
+      if (paramName === `position Y`) {
         const indexOfPlaceY = movableTilesYArray.findIndex(
           (i) => i === intParamValue,
         );

@@ -2,6 +2,18 @@ import { ReactNode } from 'react';
 
 export type FaceType = 'NORTH' | 'SOUTH' | 'EAST' | 'WEST';
 
+export interface RobotConfigType {
+  face: string;
+  positionX: number;
+  positionY: number;
+}
+
+export interface CommandLineTypes {
+  id?: string;
+  message?: string;
+  type?: string;
+}
+
 export interface MovableTypes {
   movableTilesXArray: Array<number>;
   movableTilesYArray: Array<number>;
@@ -9,16 +21,16 @@ export interface MovableTypes {
 export interface BaseComponentProps {
   children?: ReactNode;
 }
-export interface RobotComponentProps {
-  face: string;
-  positionX: number;
-  positionY: number;
-}
 
+export type RobotComponentProps = RobotConfigType;
 export interface GridComponentProps extends MovableTypes {
   robotX?: number;
   robotY?: number;
   robotEl?: ReactNode;
+  gridSize: number;
+}
+
+export interface SimulatorProps {
   gridSize: number;
 }
 
@@ -39,12 +51,6 @@ export interface PlaceInterpretterType extends MovableTypes {
 
 export interface MoveInterpretterType extends MovableTypes {
   robotConfig: RobotComponentProps;
-}
-
-export interface commandLineType {
-  id?: string;
-  message?: string;
-  type?: string;
 }
 
 type ParamsConfigType = {

@@ -79,6 +79,13 @@
         "@typescript-eslint/no-var-requires": "off",
         "no-use-before-define": [0],
         "no-plusplus": "off",
+        "no-param-reassign": [
+          "error",
+          {
+            "props": true,
+            "ignorePropertyModificationsFor": ["state"]
+          }
+        ],
         "react/no-array-index-key": "off",
         "@typescript-eslint/no-use-before-define": [1],
         "import/no-unresolved": 0,
